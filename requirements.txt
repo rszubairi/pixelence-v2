@@ -1,0 +1,6 @@
+boto3
+cryptography
+torch
+numpy
+matplotlib
+opencv-python
