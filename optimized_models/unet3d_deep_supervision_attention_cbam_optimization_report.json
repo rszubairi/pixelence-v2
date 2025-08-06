@@ -1,0 +1,17 @@
+{
+  "model_name": "unet3d_deep_supervision_attention_cbam",
+  "optimization_timestamp": "2025-07-11 01:25:36",
+  "device": "cpu",
+  "pytorch_version": "2.7.1",
+  "results": {
+    "original_inference_time": 0.33782415866851806,
+    "torchscript_inference_time": 0.3176302051544189,
+    "torchscript_speedup": 1.063576930614271,
+    "onnx_error": "Module onnx is not installed!",
+    "quantized_inference_time": 0.35281579971313476,
+    "quantization_speedup": 0.9575085893069244,
+    "parameter_count": 5604257,
+    "parameter_size_mb": 21.378543853759766
+  },
+  "recommendations": []
+}

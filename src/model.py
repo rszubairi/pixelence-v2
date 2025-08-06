@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 class UNet3D_Deep_Supervision_attention_cbam(nn.Module):
     def __init__(self, in_channels=3, out_channels=1, base_filters=32):
         super(UNet3D_Deep_Supervision_attention_cbam, self).__init__()

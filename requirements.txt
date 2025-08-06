@@ -4,3 +4,6 @@ torch
 numpy
 matplotlib
 opencv-python
+onnx
+onnxruntime
+torchvision
