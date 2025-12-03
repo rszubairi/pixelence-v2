@@ -8,7 +8,7 @@ from pathlib import Path
 import json
 
 # Import the models
-from .model import UNet3D_Deep_Supervision_attention_cbam
+from .model import inference-enhanced.UNet3D_Deep_Supervision_attention_cbam
 
 class ModelOptimizer:
     """
