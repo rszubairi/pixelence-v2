@@ -258,7 +258,7 @@ def sharpen_volume(volume: np.ndarray, background_threshold=0.01) -> np.ndarray:
 @st.cache_resource
 def load_model():
     model = UNet3D_Deep_Supervision_attention_cbam(in_channels=3, out_channels=1, base_filters=32).to(device)
-    model.load_state_dict(torch.load('_global1.pth', map_location=device))
+    model.load_state_dict(torch.load('../_global1.pth', map_location=device))
     model.eval()
     return model
 
@@ -266,7 +266,7 @@ model = load_model()
 transform_ = Transform3D(size)
 
 # Samples
-samples_dir = '_samples_'
+samples_dir = '../_samples_'
 sample_files = [f for f in os.listdir(samples_dir) if f.endswith('.npy')]
 
 st.sidebar.header("Select Sample")
@@ -302,13 +302,21 @@ if selected_sample:
     avg_ssim = np.mean(ssim_values)
     avg_psnr = np.mean(psnr_values)
 
+    # Slice selector
+    slice_idx = st.slider("Select Slice", 0, real_contrast.shape[3] - 1, real_contrast.shape[3] // 2)
+
+    # Compute metrics for selected slice
+    real_slice = real_contrast[0, :, :, slice_idx]
+    syn_slice = synthetic[0, :, :, slice_idx]
+    slice_ssim = ssim(real_slice, syn_slice, data_range=1.0)
+    slice_psnr = psnr(real_slice, syn_slice, data_range=1.0)
+
     # Display
     st.header(f"Results for {selected_sample}")
     st.write(f"Average SSIM: {avg_ssim:.4f}")
     st.write(f"Average PSNR: {avg_psnr:.4f}")
-
-    # Slice selector
-    slice_idx = st.slider("Select Slice", 0, real_contrast.shape[3] - 1, real_contrast.shape[3] // 2)
+    st.write(f"Slice {slice_idx} SSIM: {slice_ssim:.4f}")
+    st.write(f"Slice {slice_idx} PSNR: {slice_psnr:.4f}")
 
     col1, col2 = st.columns(2)
     with col1:
