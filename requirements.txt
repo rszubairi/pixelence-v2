@@ -3,7 +3,7 @@ cryptography
 torch
 numpy
 matplotlib
-opencv-python
+opencv-python-headless
 onnx
 onnxruntime
 torchvision
