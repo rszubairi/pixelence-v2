@@ -238,11 +238,11 @@ class Transform3D:
         return norm_volume
 
 # Sharpen function
-def sharpen_volume(volume: np.ndarray, sharpen_strength=3.0, background_threshold=0.01) -> np.ndarray:
+def sharpen_volume(volume: np.ndarray, background_threshold=0.01) -> np.ndarray:
     C, H, W, D = volume.shape
     sharpened = np.zeros_like(volume, dtype=np.float32)
     kernel = np.array([[ 0, -1,  0],
-                       [-1, sharpen_strength, -1],
+                       [-1,  5, -1],
                        [ 0, -1,  0]], dtype=np.float32)
     for c in range(C):
         for d in range(D):
@@ -286,21 +286,8 @@ if selected_sample:
         model_input = input_tensor.unsqueeze(0).to(device)
         model_output = model(model_input)[0].cpu().numpy()
         model_output = np.clip(model_output, 0, None)
-
-        # Improved normalization using percentiles for better contrast
-        model_flat = model_output.flatten()
-        p_low = np.percentile(model_flat, 1)
-        p_high = np.percentile(model_flat, 99)
-        if p_high > p_low:
-            model_output = np.clip((model_output - p_low) / (p_high - p_low), 0, 1)
-        else:
-            model_output = (model_output - model_output.min()) / (model_output.max() - model_output.min() + 1e-8)
-
-        # Optional: Apply mild denoising before sharpening
-        # model_output = cv2.GaussianBlur(model_output[0, :, :, :], (3, 3), 0)[None, :, :, :]
-
-        # Less aggressive sharpening to reduce noise
-        synthetic = sharpen_volume(model_output, sharpen_strength=5.0, background_threshold=0.35)
+        model_output = (model_output - model_output.min()) / (model_output.max() - model_output.min() + 1e-8)
+        synthetic = sharpen_volume(model_output)
 
     # Compute metrics (average over slices)
     ssim_values = []
@@ -334,7 +321,7 @@ if selected_sample:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.image(real_slice, caption="Real Contrast", use_container_width =True)
+        st.image(real_slice, caption="Real Contrast", use_column_width=True)
 
     with col2:
-        st.image(syn_slice, caption="Synthetic Contrast", use_container_width =True)
+        st.image(syn_slice, caption="Synthetic Contrast", use_column_width=True)
